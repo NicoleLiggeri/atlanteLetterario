@@ -5934,16 +5934,6 @@
                             }
                         },
                         {
-                            "name": "Fulmini",
-                            "info": {
-                                "Macrocategoria": "Processi",
-                                "Termine Generico": "Fenomeni atmosferici",
-                                "Nota d'Ambito": "Violente scariche elettriche tra una nube temporalesca e il suolo o tra nube e nube, accompagnate da un lampo e da un tuono",
-                                "Identificativo Wikidata": "Q33741",
-                                "URL Soggettario": "https://thes.bncf.firenze.sbn.it/termine.php?id=12825"
-                            }
-                        },
-                        {
                             "name": "Fuoco",
                             "info": {
                                 "Macrocategoria": "Processi",
@@ -7314,7 +7304,7 @@
                             }
                         },
                         {
-                            "name": "Peste",
+                            "name": "Peste, pestilenza",
                             "info": {
                                 "Macrocategoria": "Processi",
                                 "Termine Generico": "Malattie",
@@ -8344,7 +8334,7 @@
                             }
                         },
                         {
-                            "name": "Tuoni",
+                            "name": "Tuoni, fulmini",
                             "info": {
                                 "Macrocategoria": "Processi",
                                 "Termine Generico": "Fenomeni atmosferici",
@@ -11498,7 +11488,7 @@
                             }
                         },
                         {
-                            "name": "Scacchi",
+                            "name": "Scacchi, scacchiera",
                             "info": {
                                 "Macrocategoria": "Oggetti",
                                 "Termine Generico": "Oggetti",
@@ -11740,16 +11730,6 @@
                                 "Nota d'Ambito": "Alimento costituito dal tessuto muscolare di vari animali (con esclusione, di regola, della carne del pesce, spesso anzi in contrapposizione ad essa), ricco di proteine, di ferro, ecc.",
                                 "Identificativo Wikidata": "Q10990",
                                 "URL Soggettario": "https://thes.bncf.firenze.sbn.it/termine.php?id=33839"
-                            }
-                        },
-                        {
-                            "name": "Carta",
-                            "info": {
-                                "Macrocategoria": "Materia",
-                                "Termine Generico": "Materiali",
-                                "Nota d'Ambito": "Prodotto ottenuto per feltrazione di fibre cellulosiche e ridotto, per disidratazione ed essiccamento, a falde sottili per vari usi, specialmente per scrivervi, stamparvi o involgere",
-                                "Identificativo Wikidata": "Q11472",
-                                "URL Soggettario": "https://thes.bncf.firenze.sbn.it/termine.php?id=1192"
                             }
                         },
                         {
@@ -13655,15 +13635,6 @@
                                 "Identificativo Wikidata": "Q180472",
                                 "URL Soggettario": "https://thes.bncf.firenze.sbn.it/termine.php?id=1047"
                             }
-                        },{
-                            "name": "Fidanzamento",
-                            "info": {
-                                "Macrocategoria": "Strumenti",
-                                "Termine Generico": "Strumenti",
-                                "Nota d'Ambito": "",
-                                "Identificativo Wikidata": "Q51266544",
-                                "URL Soggettario": "https://thes.bncf.firenze.sbn.it/termine.php?id=18820"
-                            }
                         },
                         {
                             "name": "Resurrezione",
@@ -14606,7 +14577,7 @@
                             }
                         },
                         {
-                            "name": "Eredità",
+                            "name": "Eredità, testamento",
                             "info": {
                                 "Macrocategoria": "Strumenti",
                                 "Termine Generico": "Strumenti",
@@ -16426,16 +16397,6 @@
                             }
                         },
                         {
-                            "name": "Testamento",
-                            "info": {
-                                "Macrocategoria": "Strumenti",
-                                "Termine Generico": "Negozi unilaterali",
-                                "Nota d'Ambito": "L'atto giuridico, essenzialmente revocabile, con il quale una persona dà disposizioni circa le proprie sostanze o altri aspetti non patrimoniali, per il tempo successivo alla propria morte",
-                                "Identificativo Wikidata": "Q155656",
-                                "URL Soggettario": "https://thes.bncf.firenze.sbn.it/termine.php?id=4636"
-                            }
-                        },
-                        {
                             "name": "Tirannia",
                             "info": {
                                 "Macrocategoria": "Strumenti",
@@ -16819,16 +16780,6 @@
                 },
                 {
                     "name": "Fuliggine",
-                    "info": {
-                        "Macrocategoria": "",
-                        "Termine Generico": "",
-                        "Nota d'Ambito": "",
-                        "Identificativo Wikidata": "",
-                        "URL Soggettario": ""
-                    }
-                },
-                {
-                    "name": "Foresta",
                     "info": {
                         "Macrocategoria": "",
                         "Termine Generico": "",
@@ -19218,17 +19169,7 @@
                     }
                 },
                 {
-                    "name": "Paese",
-                    "info": {
-                        "Macrocategoria": "",
-                        "Termine Generico": "",
-                        "Nota d'Ambito": "",
-                        "Identificativo Wikidata": "",
-                        "URL Soggettario": ""
-                    }
-                },
-                {
-                    "name": "Villaggio",
+                    "name": "Paese, villaggio",
                     "info": {
                         "Macrocategoria": "",
                         "Termine Generico": "",
@@ -20498,7 +20439,7 @@
                     }
                 },
                 {
-                    "name": "Sottomarino",
+                    "name": "Sottomatino",
                     "info": {
                         "Macrocategoria": "",
                         "Termine Generico": "",
@@ -20789,16 +20730,6 @@
                 },
                 {
                     "name": "Africanismo",
-                    "info": {
-                        "Macrocategoria": "",
-                        "Termine Generico": "",
-                        "Nota d'Ambito": "",
-                        "Identificativo Wikidata": "",
-                        "URL Soggettario": ""
-                    }
-                },
-                {
-                    "name": "Arte",
                     "info": {
                         "Macrocategoria": "",
                         "Termine Generico": "",
@@ -22888,7 +22819,7 @@
                     }
                 },
                 {
-                    "name": "Guerra di secessione",
+                    "name": "Guetra di secessione",
                     "info": {
                         "Macrocategoria": "",
                         "Termine Generico": "",
@@ -26328,7 +26259,7 @@
                     }
                 },
                 {
-                    "name": "Mappa",
+                    "name": "Mappa, carta",
                     "info": {
                         "Macrocategoria": "",
                         "Termine Generico": "",
@@ -28398,7 +28329,7 @@
                     }
                 },
                 {
-                    "name": "Bosco",
+                    "name": "Bosco, foresta",
                     "info": {
                         "Macrocategoria": "",
                         "Termine Generico": "",
@@ -29908,7 +29839,7 @@
                     }
                 },
                 {
-                    "name": "Guerra preventiva",
+                    "name": "Guetra preventiva",
                     "info": {
                         "Macrocategoria": "",
                         "Termine Generico": "",
@@ -30938,7 +30869,7 @@
                     }
                 },
                 {
-                    "name": "Scienza",
+                    "name": "Scienza, scienziato",
                     "info": {
                         "Macrocategoria": "",
                         "Termine Generico": "",
@@ -31448,7 +31379,7 @@
                     }
                 },
                 {
-                    "name": "Fascismo",
+                    "name": "Fascismo, fascismi",
                     "info": {
                         "Macrocategoria": "",
                         "Termine Generico": "",
@@ -34148,16 +34079,6 @@
                     }
                 },
                 {
-                    "name": "Monumento",
-                    "info": {
-                        "Macrocategoria": "",
-                        "Termine Generico": "",
-                        "Nota d'Ambito": "",
-                        "Identificativo Wikidata": "",
-                        "URL Soggettario": ""
-                    }
-                },
-                {
                     "name": "Monumento ai caduti",
                     "info": {
                         "Macrocategoria": "",
@@ -34718,26 +34639,6 @@
                     }
                 },
                 {
-                    "name": "Negritudine",
-                    "info": {
-                        "Macrocategoria": "",
-                        "Termine Generico": "",
-                        "Nota d'Ambito": "",
-                        "Identificativo Wikidata": "",
-                        "URL Soggettario": ""
-                    }
-                },
-                {
-                    "name": "Facismi",
-                    "info": {
-                        "Macrocategoria": "",
-                        "Termine Generico": "",
-                        "Nota d'Ambito": "",
-                        "Identificativo Wikidata": "",
-                        "URL Soggettario": ""
-                    }
-                },
-                {
                     "name": "Raggio",
                     "info": {
                         "Macrocategoria": "",
@@ -34978,17 +34879,7 @@
                     }
                 },
                 {
-                    "name": "Martirio",
-                    "info": {
-                        "Macrocategoria": "",
-                        "Termine Generico": "",
-                        "Nota d'Ambito": "",
-                        "Identificativo Wikidata": "",
-                        "URL Soggettario": ""
-                    }
-                },
-                {
-                    "name": "Martire",
+                    "name": "Martirio, martire",
                     "info": {
                         "Macrocategoria": "",
                         "Termine Generico": "",
@@ -35158,17 +35049,7 @@
                     }
                 },
                 {
-                    "name": "Orfano",
-                    "info": {
-                        "Macrocategoria": "",
-                        "Termine Generico": "",
-                        "Nota d'Ambito": "",
-                        "Identificativo Wikidata": "",
-                        "URL Soggettario": ""
-                    }
-                },
-                {
-                    "name": "Orfanotrofio",
+                    "name": "Orfano, orfanotrofio",
                     "info": {
                         "Macrocategoria": "",
                         "Termine Generico": "",
@@ -38908,16 +38789,6 @@
                     }
                 },
                 {
-                    "name": "Scienziato",
-                    "info": {
-                        "Macrocategoria": "",
-                        "Termine Generico": "",
-                        "Nota d'Ambito": "",
-                        "Identificativo Wikidata": "",
-                        "URL Soggettario": ""
-                    }
-                },
-                {
                     "name": "Fatro",
                     "info": {
                         "Macrocategoria": "",
@@ -39448,17 +39319,7 @@
                     }
                 },
                 {
-                    "name": "America",
-                    "info": {
-                        "Macrocategoria": "",
-                        "Termine Generico": "",
-                        "Nota d'Ambito": "",
-                        "Identificativo Wikidata": "",
-                        "URL Soggettario": ""
-                    }
-                },
-                {
-                    "name": "Americhe",
+                    "name": "Ametica, Americhe",
                     "info": {
                         "Macrocategoria": "",
                         "Termine Generico": "",
@@ -40818,7 +40679,7 @@
                     }
                 },
                 {
-                    "name": "Oggetti animati",
+                    "name": "Oggetti animati, parlanti",
                     "info": {
                         "Macrocategoria": "",
                         "Termine Generico": "",
@@ -47058,16 +46919,6 @@
                     }
                 },
                 {
-                    "name": "Razzismo",
-                    "info": {
-                        "Macrocategoria": "",
-                        "Termine Generico": "",
-                        "Nota d'Ambito": "",
-                        "Identificativo Wikidata": "",
-                        "URL Soggettario": ""
-                    }
-                },
-                {
                     "name": "Terzo mondo",
                     "info": {
                         "Macrocategoria": "",
@@ -47278,7 +47129,7 @@
                     }
                 },
                 {
-                    "name": "Guerra nucleare",
+                    "name": "Guetra nucleare",
                     "info": {
                         "Macrocategoria": "",
                         "Termine Generico": "",
@@ -51548,7 +51399,7 @@
                     }
                 },
                 {
-                    "name": "Fiume",
+                    "name": "Fiume, fiumi",
                     "info": {
                         "Macrocategoria": "",
                         "Termine Generico": "",
@@ -52409,16 +52260,6 @@
                 },
                 {
                     "name": "Coppia",
-                    "info": {
-                        "Macrocategoria": "",
-                        "Termine Generico": "",
-                        "Nota d'Ambito": "",
-                        "Identificativo Wikidata": "",
-                        "URL Soggettario": ""
-                    }
-                },
-                {
-                    "name": "Pestilenza",
                     "info": {
                         "Macrocategoria": "",
                         "Termine Generico": "",
@@ -54058,7 +53899,7 @@
                     }
                 },
                 {
-                    "name": "Guerra celeste",
+                    "name": "Guetra celeste",
                     "info": {
                         "Macrocategoria": "",
                         "Termine Generico": "",
@@ -55098,7 +54939,7 @@
                     }
                 },
                 {
-                    "name": "Zio",
+                    "name": "Zio, zia",
                     "info": {
                         "Macrocategoria": "",
                         "Termine Generico": "",
@@ -55159,136 +55000,6 @@
                 },
                 {
                     "name": "Vittoria/Sconfitta",
-                    "info": {
-                        "Macrocategoria": "",
-                        "Termine Generico": "",
-                        "Nota d'Ambito": "",
-                        "Identificativo Wikidata": "",
-                        "URL Soggettario": ""
-                    }
-                },
-                {
-                    "name": "Marionette",
-                    "info": {
-                        "Macrocategoria": "",
-                        "Termine Generico": "",
-                        "Nota d'Ambito": "",
-                        "Identificativo Wikidata": "",
-                        "URL Soggettario": ""
-                    }
-                },
-                {
-                    "name": "Scacchiera",
-                    "info": {
-                        "Macrocategoria": "",
-                        "Termine Generico": "",
-                        "Nota d'Ambito": "",
-                        "Identificativo Wikidata": "",
-                        "URL Soggettario": ""
-                    }
-                },
-                {
-                    "name": "Ventre",
-                    "info": {
-                        "Macrocategoria": "",
-                        "Termine Generico": "",
-                        "Nota d'Ambito": "",
-                        "Identificativo Wikidata": "",
-                        "URL Soggettario": ""
-                    }
-                },
-                {
-                    "name": "Verdura",
-                    "info": {
-                        "Macrocategoria": "",
-                        "Termine Generico": "",
-                        "Nota d'Ambito": "",
-                        "Identificativo Wikidata": "",
-                        "URL Soggettario": ""
-                    }
-                },
-                {
-                    "name": "Vergine",
-                    "info": {
-                        "Macrocategoria": "",
-                        "Termine Generico": "",
-                        "Nota d'Ambito": "",
-                        "Identificativo Wikidata": "",
-                        "URL Soggettario": ""
-                    }
-                },
-                {
-                    "name": "Verginità",
-                    "info": {
-                        "Macrocategoria": "",
-                        "Termine Generico": "",
-                        "Nota d'Ambito": "",
-                        "Identificativo Wikidata": "",
-                        "URL Soggettario": ""
-                    }
-                },
-                {
-                    "name": "Vergogna",
-                    "info": {
-                        "Macrocategoria": "",
-                        "Termine Generico": "",
-                        "Nota d'Ambito": "",
-                        "Identificativo Wikidata": "",
-                        "URL Soggettario": ""
-                    }
-                },
-                {
-                    "name": "Verismo",
-                    "info": {
-                        "Macrocategoria": "",
-                        "Termine Generico": "",
-                        "Nota d'Ambito": "",
-                        "Identificativo Wikidata": "",
-                        "URL Soggettario": ""
-                    }
-                },
-                {
-                    "name": "Verità",
-                    "info": {
-                        "Macrocategoria": "",
-                        "Termine Generico": "",
-                        "Nota d'Ambito": "",
-                        "Identificativo Wikidata": "",
-                        "URL Soggettario": ""
-                    }
-                },
-                {
-                    "name": "Verme",
-                    "info": {
-                        "Macrocategoria": "",
-                        "Termine Generico": "",
-                        "Nota d'Ambito": "",
-                        "Identificativo Wikidata": "",
-                        "URL Soggettario": ""
-                    }
-                },
-                {
-                    "name": "Sera",
-                    "info": {
-                        "Macrocategoria": "",
-                        "Termine Generico": "",
-                        "Nota d'Ambito": "",
-                        "Identificativo Wikidata": "",
-                        "URL Soggettario": ""
-                    }
-                },
-                {
-                    "name": "Orgia",
-                    "info": {
-                        "Macrocategoria": "",
-                        "Termine Generico": "",
-                        "Nota d'Ambito": "",
-                        "Identificativo Wikidata": "",
-                        "URL Soggettario": ""
-                    }
-                },
-                {
-                    "name": "Torre",
                     "info": {
                         "Macrocategoria": "",
                         "Termine Generico": "",
