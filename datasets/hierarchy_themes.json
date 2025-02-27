@@ -4,6 +4,17 @@
             "soffitta"
         ]
     },
+    "portogallo": {
+        "Associati": [
+            "America americhe",
+            "Colonia colonizzazione",
+            "europa",
+            "lisbona",
+            "mare",
+            "nave",
+            "spagna"
+        ]
+    },
     "soffitta": {
         "Associati": [
             "antiquario",
@@ -5870,7 +5881,12 @@
             "aridità",
             "arsura",
             "sahara",
-            "cane cavallo caverna circo corrida crudeltà",
+            "cane",
+            "cavallo",
+            "caverna",
+            "circo",
+            "corrida",
+            "crudeltà",
             "canyon",
             "graal",
             "eretmita",

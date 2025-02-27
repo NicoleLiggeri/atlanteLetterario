@@ -1,5 +1,5 @@
 {
-    "name": "Root",
+    "name": "Tutti",
     "children": [
         {
             "name": "Azioni",
@@ -25,6 +25,15 @@
                                 "Nota d'Ambito": "",
                                 "Identificativo Wikidata": "Q127683",
                                 "URL Soggettario": "https://thes.bncf.firenze.sbn.it/termine.php?id=6216"
+                            }
+                        },{
+                            "name": "Conversione",
+                            "info": {
+                                "Macrocategoria": "Attività",
+                                "Termine Generico": "Attività",
+                                "Nota d'Ambito": "Cambiamento di stato, trasformazione di qualcosa in un'altra in varie situazioni e ambiti",
+                                "Identificativo Wikidata": "",
+                                "URL Soggettario": "https://thes.bncf.firenze.sbn.it/termine.php?id=20237"
                             }
                         },
                         {
@@ -4371,15 +4380,24 @@
                                 "Identificativo Wikidata": "Q1136816",
                                 "URL Soggettario": "https://thes.bncf.firenze.sbn.it/termine.php?id=29968"
                             }
-                        },
-                        {
-                            "name": "Guerre civili",
+                        },{
+                            "name": "Abitudine",
                             "info": {
                                 "Macrocategoria": "Processi",
                                 "Termine Generico": "Processi",
-                                "Nota d'Ambito": "",
-                                "Identificativo Wikidata": "",
-                                "URL Soggettario": "https://thes.bncf.firenze.sbn.it/termine.php?id=4654"
+                                "Nota d'Ambito": "Tendenza acquisita che deriva dalla ripetizione costante di atti o comportamenti",
+                                "Identificativo Wikidata": "Q1136816",
+                                "URL Soggettario": "https://thes.bncf.firenze.sbn.it/termine.php?id=29968"
+                            }
+                        },
+                        {
+                            "name": "Sadismo",
+                            "info": {
+                                "Macrocategoria": "Processi",
+                                "Termine Generico": "Processi",
+                                "Nota d'Ambito": "Deviazione sessuale in cui la gratificazione sessuale viene derivata dall'umiliazione o dal procurare dolore ad un'altra persona",
+                                "Identificativo Wikidata": "Q5507613",
+                                "URL Soggettario": "https://thes.bncf.firenze.sbn.it/termine.php?id=21058"
                             }
                         },
                         {
@@ -4427,7 +4445,7 @@
                             "name": "Emarginazione sociale",
                             "info": {
                                 "Macrocategoria": "Processi",
-                                "Termine Generico": "Proccessi",
+                                "Termine Generico": "Processi",
                                 "Nota d'Ambito": "",
                                 "Identificativo Wikidata": "",
                                 "URL Soggettario": "https://thes.bncf.firenze.sbn.it/termine.php?id=2597"
@@ -11610,6 +11628,15 @@
                                 "Nota d'Ambito": "Residuo minerale, incombustibile, che si ottiene quando si brucia una sostanza organica, vegetale, animale o fossile. Per il significato di polvere a cui si riducono i cadaveri, specialmente dopo la cremazione, usare Ceneri",
                                 "Identificativo Wikidata": "Q152079",
                                 "URL Soggettario": "https://thes.bncf.firenze.sbn.it/termine.php?id=6045"
+                            }
+                        },{
+                            "name": "Oro",
+                            "info": {
+                                "Macrocategoria": "Materia",
+                                "Termine Generico": "Materia",
+                                "Nota d'Ambito": "Metallo prezioso di colore giallo lucente, utilizzato per fabbricare oggetti di oreficeria, monete e decorazioni",
+                                "Identificativo Wikidata": "Q897",
+                                "URL Soggettario": "https://thes.bncf.firenze.sbn.it/termine.php?id=7196"
                             }
                         },
                         {
@@ -20589,7 +20616,7 @@
                     }
                 },
                 {
-                    "name": "Tetra Promessa",
+                    "name": "Terra Promessa",
                     "info": {
                         "Macrocategoria": "",
                         "Termine Generico": "",
@@ -21299,7 +21326,7 @@
                     }
                 },
                 {
-                    "name": "Tetra Santa",
+                    "name": "Terra Santa",
                     "info": {
                         "Macrocategoria": "",
                         "Termine Generico": "",
@@ -43127,6 +43154,15 @@
                         "Identificativo Wikidata": "",
                         "URL Soggettario": ""
                     }
+                },{
+                    "name": "Portogallo",
+                    "info": {
+                        "Macrocategoria": "",
+                        "Termine Generico": "",
+                        "Nota d'Ambito": "",
+                        "Identificativo Wikidata": "",
+                        "URL Soggettario": ""
+                    }
                 },
                 {
                     "name": "Paradiso perduto",
@@ -47199,7 +47235,7 @@
                     }
                 },
                 {
-                    "name": "Tetra (pianeta)",
+                    "name": "Terra (pianeta)",
                     "info": {
                         "Macrocategoria": "",
                         "Termine Generico": "",
@@ -54997,9 +55033,28 @@
                         "Identificativo Wikidata": "",
                         "URL Soggettario": ""
                     }
+                },{
+                    "name": "Viandante",
+                    "info": {
+                        "Macrocategoria": "",
+                        "Termine Generico": "",
+                        "Nota d'Ambito": "",
+                        "Identificativo Wikidata": "",
+                        "URL Soggettario": ""
+                    }
                 },
                 {
-                    "name": "Vittoria/Sconfitta",
+                    "name": "Porto",
+                    "info": {
+                        "Macrocategoria": "",
+                        "Termine Generico": "",
+                        "Nota d'Ambito": "",
+                        "Identificativo Wikidata": "",
+                        "URL Soggettario": ""
+                    }
+                },
+                {
+                    "name": "Caverna",
                     "info": {
                         "Macrocategoria": "",
                         "Termine Generico": "",
