@@ -50,7 +50,7 @@
   <div class="container">
     
     <div class="slider-track"></div>
-    <input type="range" min="0" max="2025" value="30" id="slider-1" oninput="slideOne()">
+    <input type="range" min="0" max="2025" value="1325" id="slider-1" oninput="slideOne()">
     <input type="range" min="0" max="2025" value="2025" id="slider-2" oninput="slideTwo()">
   </div>
 </div>
@@ -848,6 +848,24 @@ window.addEventListener('DOMContentLoaded', () => {
       });
     }
   });
+  document.addEventListener("DOMContentLoaded", () => {
+  const params = new URLSearchParams(window.location.search);
+  const themeParam = params.get('theme');
+  if (themeParam) {
+    const searchInput = document.getElementById('search-input');
+    if (searchInput) {
+      searchInput.value = themeParam;
+    }
+    // Aspetta un attimo per essere sicuro che gli altri script siano caricati
+    setTimeout(() => {
+      // Se il flag è presente (triggerSearch=1) triggera la ricerca
+      if (params.get("triggerSearch") === "1" && typeof triggerSearch === "function") {
+        triggerSearch();
+      }
+    }, 100);
+  }
+});
+
 
 
   </script>

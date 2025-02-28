@@ -294,7 +294,7 @@
         } else {
           globeButton.title = "Visualizza mappa";
           globeButton.addEventListener("click", () => {
-            window.location.href = "map.html?theme=" + encodeURIComponent(searchTerm);
+            window.location.href = "map.html?theme=" + encodeURIComponent(searchTerm)+"&triggerSearch=1";
           });
         }
         titleContainer.appendChild(globeButton);

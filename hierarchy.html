@@ -292,78 +292,81 @@ d3.json("https://raw.githubusercontent.com/NicoleLiggeri/atlanteLetterario/refs/
     }
 
     function handleClick(event, d) {
-      if (d.depth === 0) return;
-      if (d.children) {
-        document.querySelector("#visualization-container").style.display = 'none';
-        document.querySelector("#container").style.display = 'block';
+  if (d.depth === 0) return;
+  if (d.children) {
+    document.querySelector("#visualization-container").style.display = 'none';
+    document.querySelector("#container").style.display = 'block';
 
-        const newHierarchyContainer = document.createElement('div');
-        newHierarchyContainer.id = 'new-hierarchy-container';
-        document.querySelector("#container").appendChild(newHierarchyContainer);
+    const newHierarchyContainer = document.createElement('div');
+    newHierarchyContainer.id = 'new-hierarchy-container';
+    document.querySelector("#container").appendChild(newHierarchyContainer);
 
-        function displayChildren(node, previousNodes) {
-          newHierarchyContainer.innerHTML = '';
-          const backButton = document.createElement('button');
-          backButton.innerHTML = '◀ Indietro';
-          backButton.className = 'back-button';
-          backButton.style.marginBottom = '20px';
-          backButton.onclick = function () {
-            if (previousNodes.length > 1) {
-              displayChildren(previousNodes[previousNodes.length - 1], previousNodes.slice(0, -1));
-            } else {
-              document.querySelector("#visualization-container").style.display = 'flex';
-              const container = document.querySelector("#container");
-              container.removeChild(newHierarchyContainer);
-              container.style.display = 'none';
+    function displayChildren(node, previousNodes) {
+      newHierarchyContainer.innerHTML = '';
+      const backButton = document.createElement('button');
+      backButton.innerHTML = '◀ Indietro';
+      backButton.className = 'back-button';
+      backButton.style.marginBottom = '20px';
+      backButton.onclick = function () {
+        if (previousNodes.length > 1) {
+          displayChildren(previousNodes[previousNodes.length - 1], previousNodes.slice(0, -1));
+        } else {
+          document.querySelector("#visualization-container").style.display = 'flex';
+          const container = document.querySelector("#container");
+          container.removeChild(newHierarchyContainer);
+          container.style.display = 'none';
+        }
+      };
+      newHierarchyContainer.appendChild(backButton);
+      const childrenList = document.createElement('ul');
+      node.children.forEach(child => {
+        const listItem = document.createElement('li');
+        // Se il nodo ha figli e quindi mostriamo il toggle, rimuoviamo il bullet dell'li corrente
+        if (child.children && child.children.length > 0) {
+          listItem.style.listStyle = 'none'; // Rimuove il pallino dall'li contenitore del toggle
+
+          const toggleBtn = document.createElement('button');
+          toggleBtn.textContent = '▶';
+          toggleBtn.style.marginRight = '10px';
+          toggleBtn.onclick = function () {
+            const childUL = listItem.querySelector('ul');
+            if (childUL) {
+              childUL.style.display = childUL.style.display === 'none' ? 'block' : 'none';
+              toggleBtn.textContent = childUL.style.display === 'none' ? '▶' : '▼';
             }
           };
-          newHierarchyContainer.appendChild(backButton);
-          const childrenList = document.createElement('ul');
-          node.children.forEach(child => {
-            const listItem = document.createElement('li');
-            if (child.children && child.children.length > 0) {
-              const toggleBtn = document.createElement('button');
-              toggleBtn.textContent = '▼';
-              toggleBtn.style.marginRight = '10px';
-              toggleBtn.onclick = function () {
-                const childUL = listItem.querySelector('ul');
-                if (childUL) {
-                  childUL.style.display = childUL.style.display === 'none' ? 'block' : 'none';
-                  toggleBtn.textContent = childUL.style.display === 'none' ? '▶' : '▼';
-                }
-              };
-              const childName = document.createElement('span');
-              childName.textContent = child.data.name;
-              listItem.appendChild(toggleBtn);
-              listItem.appendChild(childName);
-              const childUL = document.createElement('ul');
-              childUL.style.display = 'none';
-              child.children.forEach(grandChild => {
-                const grandChildItem = document.createElement('li');
-                grandChildItem.textContent = grandChild.data.name;
-                grandChildItem.style.cursor = 'pointer';
-                grandChildItem.onclick = function () {
-                  createLinearDendrogram(grandChild.data.name, grandChild, child, newHierarchyContainer);
-                };
-                childUL.appendChild(grandChildItem);
-              });
-              listItem.appendChild(childUL);
-            } else {
-              const childName = document.createElement('span');
-              childName.textContent = child.data.name;
-              childName.style.cursor = 'pointer';
-              childName.onclick = function () {
-                createLinearDendrogram(child.data.name, child, node, newHierarchyContainer);
-              };
-              listItem.appendChild(childName);
-            }
-            childrenList.appendChild(listItem);
+          const childName = document.createElement('span');
+          childName.textContent = child.data.name;
+          listItem.appendChild(toggleBtn);
+          listItem.appendChild(childName);
+          const childUL = document.createElement('ul');
+          childUL.style.display = 'none';
+          child.children.forEach(grandChild => {
+            const grandChildItem = document.createElement('li');
+            grandChildItem.textContent = grandChild.data.name;
+            grandChildItem.style.cursor = 'pointer';
+            grandChildItem.onclick = function () {
+              createLinearDendrogram(grandChild.data.name, grandChild, child, newHierarchyContainer);
+            };
+            childUL.appendChild(grandChildItem);
           });
-          newHierarchyContainer.appendChild(childrenList);
+          listItem.appendChild(childUL);
+        } else {
+          const childName = document.createElement('span');
+          childName.textContent = child.data.name;
+          childName.style.cursor = 'pointer';
+          childName.onclick = function () {
+            createLinearDendrogram(child.data.name, child, node, newHierarchyContainer);
+          };
+          listItem.appendChild(childName);
         }
-        displayChildren(d, [d]);
-      }
+        childrenList.appendChild(listItem);
+      });
+      newHierarchyContainer.appendChild(childrenList);
     }
+    displayChildren(d, [d]);
+  }
+}
 
     svg.selectAll("path")
       .data(root.descendants().filter(d => d.children))
@@ -575,7 +578,7 @@ async function createLinearDendrogram(searchTerm, node, parentNode, intermediate
         globeButton.title = "visualizza mappa";
         globeButton.addEventListener('click', () => {
           const theme = themeTitleEl.textContent.trim();
-          window.location.href = "map.html?theme=" + encodeURIComponent(theme);
+          window.location.href = "map.html?theme=" + encodeURIComponent(theme)+"&triggerSearch=1";
         });
       }
       titleContainer.appendChild(globeButton);
