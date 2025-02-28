@@ -160,45 +160,50 @@
     
     // Funzione per creare il pulsante "Indietro"
     function createBackButton(container) {
-      const backButton = document.createElement("button");
-      backButton.className = "back-button";
-      backButton.textContent = "◀ Indietro";
-      backButton.style.marginBottom = "20px";
-      backButton.addEventListener("click", () => {
-        if (document.referrer && document.referrer.includes("hierarchy.html")) {
-          window.location.href = "hierarchy.html";
-          return;
-        }
-        switch (currentView) {
-          case "theme":
-            setViewState("slice");
-            alert("Tornando alla vista della fetta...");
-            break;
-          case "slice":
-            setViewState("initial");
-            alert("Tornando alla vista iniziale (grafo radiale)...");
-            break;
-          default:
-            window.location.href = "hierarchy.html";
-            break;
-        }
-      });
-      container.appendChild(backButton);
+  const backButton = document.createElement("button");
+  backButton.className = "back-button";
+  backButton.textContent = "◀ Gerarchia";
+  backButton.style.marginBottom = "20px";
+  backButton.addEventListener("click", () => {
+    const storedState = sessionStorage.getItem("previousHierarchyState");
+    if (storedState) {
+      // Torna a hierarchy.html e lascia che quella pagina legga il suo stato
+      window.location.href = "hierarchy.html";
+    } else {
+      // Se non c'è stato salvato, torna alla home o gestisci diversamente
+      window.location.href = "hierarchy.html";
     }
-    
-    // Funzione per leggere un parametro dalla query string
-    function getQueryParam(param) {
-      const urlParams = new URLSearchParams(window.location.search);
-      return urlParams.get(param);
-    }
-    
-    // Se nella URL è presente un parametro "theme", avvia la ricerca iniziale
-    const themeParam = getQueryParam("theme");
-    if (themeParam) {
-      setViewState("initial", { query: themeParam });
-      createLinearDendrogram(themeParam, document.getElementById("viz"));
-      searchInput.value = "";
-    }
+  });
+  container.appendChild(backButton);
+}
+ 
+// Funzione per leggere un parametro dalla query string (se necessario)
+function getQueryParam(param) {
+  const urlParams = new URLSearchParams(window.location.search);
+  return urlParams.get(param);
+}
+
+// All’avvio di theme.html, controlla se c’è uno stato salvato da hierarchy.html
+const storedState = sessionStorage.getItem("previousHierarchyState");
+if (storedState) {
+  const { theme: prevTheme, view: prevView } = JSON.parse(storedState);
+  // Se vuoi, puoi visualizzare un messaggio o pre-caricare informazioni
+  console.log("Stato precedente rilevato:", prevTheme, prevView);
+  // In alternativa, se non c’è un parametro "theme" in URL, puoi usare quello salvato
+  if (!getQueryParam("theme")) {
+    // Avvia automaticamente il dendrogramma con il tema precedentemente selezionato
+    createLinearDendrogram(prevTheme, document.getElementById("viz"));
+    searchInput.value = "";
+  }
+} else {
+  // Se non c’è uno stato nel sessionStorage, prova a leggere il parametro in URL
+  const themeParam = getQueryParam("theme");
+  if (themeParam) {
+    createLinearDendrogram(themeParam, document.getElementById("viz"));
+    searchInput.value = "";
+  }
+}
+
     
     // Funzione di ricerca condivisa
     function runSearch() {
