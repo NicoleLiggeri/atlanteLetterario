@@ -29,106 +29,226 @@
   </div>
 
   <script>
-
+    // --- Autocompletamento ---
+    let suggestionIndex = -1;
+    // Ora memorizziamo i temi come oggetti { original, normalized }
+    let themes = [];
+    let validThemes = new Set(); // Set per i temi validi (presenti in hierarchy_themes.json)
+    
+    const searchInput = document.getElementById("search-input");
+    const suggestionsList = document.getElementById("suggestions-list");
+    
+    // Funzione di normalizzazione: minuscolo, rimozione accenti e sostituzione spazi con trattini
+    function normalizeString(str) {
+      return str.trim()
+                .toLowerCase()
+                .normalize('NFD').replace(/[\u0300-\u036f]/g, "")
+                .replace(/ /g, '-');
+    }
+    
+    // Carica i temi per le suggestions da gerarchia_sogg.json
+    d3.json("https://raw.githubusercontent.com/NicoleLiggeri/atlanteLetterario/refs/heads/main/datasets/gerarchia_sogg.json")
+      .then(data => {
+        const root = d3.hierarchy(data);
+        const themesSet = new Set();
+        root.descendants().forEach(d => {
+          if (d.depth > 0 && d.data.name) {
+            const original = d.data.name.trim();
+            const normalized = normalizeString(original);
+            if (!themesSet.has(normalized)) {
+              themesSet.add(normalized);
+              themes.push({ original, normalized });
+            }
+          }
+        });
+        updateSuggestions(); // aggiorna le suggestions iniziali
+      })
+      .catch(err => console.error("Errore nel caricamento dei temi:", err));
+    
+    // Carica i temi validi da hierarchy_themes.json e normalizza le chiavi
+    fetch("https://raw.githubusercontent.com/NicoleLiggeri/atlanteLetterario/refs/heads/main/datasets/hierarchy_themes.json")
+      .then(response => response.json())
+      .then(data => {
+        // Normalizziamo le chiavi per confronti consistenti
+        validThemes = new Set(Object.keys(data).map(key => normalizeString(key)));
+        updateSuggestions();
+      })
+      .catch(err => console.error("Errore nel caricamento dei temi validi:", err));
+    
+    // Funzione per aggiornare le suggestions
+    function updateSuggestions() {
+      suggestionIndex = -1;
+      suggestionsList.innerHTML = "";
+      const queryNormalized = normalizeString(searchInput.value);
+      if (queryNormalized.length === 0) return;
+    
+      // Filtra i temi in base al valore normalizzato
+      const filteredThemes = themes.filter(themeObj =>
+        themeObj.normalized.startsWith(queryNormalized)
+      );
+    
+      // Filtra ulteriormente: mostra solo i temi presenti in validThemes
+      const validFilteredThemes = filteredThemes.filter(themeObj =>
+        validThemes.has(themeObj.normalized)
+      );
+    
+      // Mostra i primi quattro suggerimenti
+      validFilteredThemes.slice(0, 4).forEach(themeObj => {
+        const li = document.createElement("li");
+        li.textContent = themeObj.original;
+        li.addEventListener("click", () => {
+          searchInput.value = themeObj.original;
+          suggestionsList.innerHTML = "";
+          suggestionIndex = -1;
+          runSearch();
+        });
+        suggestionsList.appendChild(li);
+      });
+    }
+    
+    searchInput.addEventListener("input", updateSuggestions);
+    
+    searchInput.addEventListener("keydown", (e) => {
+      const items = suggestionsList.getElementsByTagName("li");
+      if (e.key === "ArrowDown") {
+        e.preventDefault();
+        if (items.length === 0) return;
+        suggestionIndex = (suggestionIndex + 1) % items.length;
+        highlightSuggestion(items, suggestionIndex);
+      } else if (e.key === "ArrowUp") {
+        e.preventDefault();
+        if (items.length === 0) return;
+        suggestionIndex = (suggestionIndex - 1 + items.length) % items.length;
+        highlightSuggestion(items, suggestionIndex);
+      } else if (e.key === "Enter") {
+        e.preventDefault();
+        if (suggestionIndex > -1 && items[suggestionIndex]) {
+          searchInput.value = items[suggestionIndex].textContent;
+        }
+        suggestionsList.innerHTML = "";
+        suggestionIndex = -1;
+        runSearch();
+      }
+    });
+    
+    function highlightSuggestion(items, index) {
+      Array.from(items).forEach(item => item.classList.remove("active"));
+      if (items[index]) {
+        items[index].classList.add("active");
+      }
+    }
+    
+    document.addEventListener("click", (e) => {
+      if (!searchInput.contains(e.target) && !suggestionsList.contains(e.target)) {
+        suggestionsList.innerHTML = "";
+        suggestionIndex = -1;
+      }
+    });
+    // --- Fine Autocompletamento ---
+    
+    // Gestione dello stato della vista
     let currentView = "initial"; 
-
-  
     function setViewState(newState, extraData = null) {
       currentView = newState;
       sessionStorage.setItem("viewState", JSON.stringify({ state: newState, data: extraData }));
     }
-
     const savedState = sessionStorage.getItem("viewState");
     if (savedState) {
       const { state, data } = JSON.parse(savedState);
       currentView = state;
     }
-
+    
+    // Funzione per creare il pulsante "Indietro"
     function createBackButton(container) {
       const backButton = document.createElement("button");
       backButton.className = "back-button";
       backButton.textContent = "◀ Indietro";
       backButton.style.marginBottom = "20px";
       backButton.addEventListener("click", () => {
-
         if (document.referrer && document.referrer.includes("hierarchy.html")) {
           window.location.href = "hierarchy.html";
           return;
         }
-        
         switch (currentView) {
           case "theme":
-            
             setViewState("slice");
-            
             alert("Tornando alla vista della fetta...");
             break;
           case "slice":
-            
             setViewState("initial");
             alert("Tornando alla vista iniziale (grafo radiale)...");
             break;
           default:
-            
             window.location.href = "hierarchy.html";
             break;
         }
       });
       container.appendChild(backButton);
     }
-
     
+    // Funzione per leggere un parametro dalla query string
     function getQueryParam(param) {
       const urlParams = new URLSearchParams(window.location.search);
       return urlParams.get(param);
     }
-
     
+    // Se nella URL è presente un parametro "theme", avvia la ricerca iniziale
     const themeParam = getQueryParam("theme");
     if (themeParam) {
-      
-      document.getElementById("search-input").value = themeParam;
-      
       setViewState("initial", { query: themeParam });
       createLinearDendrogram(themeParam, document.getElementById("viz"));
+      searchInput.value = "";
     }
-
     
-    document.getElementById("search-button").addEventListener("click", () => {
-      const rawInput = document.getElementById("search-input").value.trim();
+    // Funzione di ricerca condivisa
+    function runSearch() {
+      const rawInput = searchInput.value.trim();
       if (!rawInput) {
-        alert("Inserisci un tema!");
         return;
       }
-      
       const searchTerm = rawInput.charAt(0).toUpperCase() + rawInput.slice(1).toLowerCase();
-      window.location.href = "theme.html?theme=" + encodeURIComponent(searchTerm);
-    });
-
-    
-    async function createLinearDendrogram(searchTerm, container) {
       
-      const normalizedSearchTerm = searchTerm.toLowerCase()
-        .normalize('NFD').replace(/[\u0300-\u036f]/g, "")
-        .replace(/ /g, '-');
-
-      try {
-        
-        const themesHierarchyResponse = await fetch("https://raw.githubusercontent.com/NicoleLiggeri/atlanteLetterario/refs/heads/main/datasets/hierarchy_themes.json");
-        const themesHierarchyData = await themesHierarchyResponse.json();
-        const matches = themesHierarchyData[normalizedSearchTerm];
-        if (!matches) {
-          container.innerHTML = `<p>Nessun tema trovato per "${searchTerm}"</p>`;
-          return;
-        }
-
-        
+      searchInput.value = "";
+      suggestionsList.innerHTML = "";
+      
+      setViewState("theme", { query: searchTerm });
+      
+      const vizContainer = document.getElementById("viz");
+      if (vizContainer) {
+        vizContainer.innerHTML = "";
+        createLinearDendrogram(searchTerm, vizContainer)
+          .catch(error => console.error("Errore in createLinearDendrogram:", error));
+      }
+      searchInput.focus();
+    }
+    
+    document.getElementById("search-button").addEventListener("click", runSearch);
+    
+    document.getElementById("search-input").addEventListener("keyup", (e) => {
+      if (e.key === "Enter") {
+        e.preventDefault();
+        runSearch();
+      }
+    });
+    
+    // Funzione createLinearDendrogram che utilizza normalizeString
+    async function createLinearDendrogram(searchTerm, container) {
+  const normalizedSearchTerm = normalizeString(searchTerm);
+  try {
+    const themesHierarchyResponse = await fetch("https://raw.githubusercontent.com/NicoleLiggeri/atlanteLetterario/refs/heads/main/datasets/hierarchy_themes.json");
+    const themesHierarchyData = await themesHierarchyResponse.json();
+    // Cerca tra le chiavi quella che, una volta normalizzata, corrisponde al termine di ricerca
+    const matchedKey = Object.keys(themesHierarchyData).find(key => normalizeString(key) === normalizedSearchTerm);
+    const matches = matchedKey ? themesHierarchyData[matchedKey] : null;
+    
+    if (!matches) {
+      container.innerHTML = `<p>Nessun tema trovato per "${searchTerm}"</p>`;
+      return;
+    }
         const themesDataResponse = await fetch("https://raw.githubusercontent.com/NicoleLiggeri/atlanteLetterario/refs/heads/main/datasets/data.json");
         const themesData = await themesDataResponse.json();
-
-        
         const occurrenceCounts = matches.Associati.reduce((acc, word) => {
-          const normalizedWord = word.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
+          const normalizedWord = normalizeString(word);
           const count = themesData.filter(item => {
             if (!item["Temi"]) return false;
             const itemThemesArray = item["Temi"]
@@ -140,32 +260,27 @@
           acc[word] = count;
           return acc;
         }, {});
-
-        
         const mainThemeCount = themesData.filter(item => {
           if (!item["Temi"]) return false;
           const itemThemesArray = item["Temi"]
             .normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase()
             .split(/\W+/)
             .filter(Boolean);
-          const normalizedRootTheme = searchTerm.normalize('NFD').replace(/[\u0300-\u036f]/g, "").toLowerCase();
-          return itemThemesArray.includes(normalizedRootTheme);
+          return itemThemesArray.includes(normalizedSearchTerm);
         }).length;
-
         
         createBackButton(container);
-
         
         const titleContainer = document.createElement("div");
         titleContainer.className = "theme-title-container";
         titleContainer.style.display = "flex";
         titleContainer.style.alignItems = "center";
         titleContainer.style.gap = "8px";
-
+        
         const h1 = document.createElement("h1");
         h1.textContent = searchTerm;
         titleContainer.appendChild(h1);
-
+        
         const globeButton = document.createElement("button");
         globeButton.className = "globe-button";
         globeButton.innerHTML = `<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" 
@@ -184,13 +299,11 @@
         }
         titleContainer.appendChild(globeButton);
         container.appendChild(titleContainer);
-
         
         let themeInfoHTML = `<p>Nessuna informazione aggiuntiva disponibile per il tema ${searchTerm}</p>`;
         try {
           const soggResponse = await fetch("https://raw.githubusercontent.com/NicoleLiggeri/atlanteLetterario/refs/heads/main/datasets/gerarchia_sogg.json");
           const soggData = await soggResponse.json();
-
           function findNodeByName(node, name) {
             if (node.name === name) return node;
             if (node.children && node.children.length > 0) {
@@ -225,26 +338,24 @@
         infoDiv.id = "theme-info";
         infoDiv.innerHTML = themeInfoHTML;
         container.appendChild(infoDiv);
-
         
         const treeData = {
           name: searchTerm,
           count: mainThemeCount,
           children: Object.entries(occurrenceCounts).map(([name, count]) => ({ name, count }))
         };
-
+        
         const defaultWidth = Math.max(window.innerWidth, 600);
         const defaultHeight = window.innerHeight * 0.8;
-
         const svgLinear = d3.select(container)
           .append("svg")
           .attr("width", defaultWidth)
           .attr("height", defaultHeight);
-
+        
         const treeLayout = d3.tree()
           .nodeSize([60, 120])
           .separation((a, b) => a.parent === b.parent ? 0.5 : 1);
-
+        
         const rootLinear = d3.hierarchy(treeData);
         treeLayout(rootLinear);
         rootLinear.eachAfter(d => {
@@ -252,22 +363,22 @@
             d.x = d.children[0].x;
           }
         });
-
+        
         const minX = d3.min(rootLinear.descendants(), d => d.x);
         const maxX = d3.max(rootLinear.descendants(), d => d.x);
         const minY = d3.min(rootLinear.descendants(), d => d.y);
         const maxY = d3.max(rootLinear.descendants(), d => d.y);
-
+        
         const margin = { top: 20, right: 50, bottom: 20, left: 50 };
         const svgWidthCalc = (maxY - minY) + margin.left + margin.right;
         const svgHeightCalc = (maxX - minX) + margin.top + margin.bottom;
-
+        
         svgLinear.attr("width", Math.max(600, svgWidthCalc))
                  .attr("height", svgHeightCalc);
-
+        
         const g = svgLinear.append("g")
           .attr("transform", `translate(${margin.left - minY}, ${margin.top - minX})`);
-
+        
         g.selectAll("path")
           .data(rootLinear.links())
           .enter()
@@ -278,7 +389,7 @@
           )
           .attr("stroke", "#ccc")
           .attr("fill", "none");
-
+        
         const maxCountVal = d3.max(rootLinear.descendants(), d => d.data.count || 1);
         g.selectAll("circle")
           .data(rootLinear.descendants())
@@ -288,7 +399,7 @@
           .attr("cy", d => d.x)
           .attr("r", d => d.data.count ? (5 + (d.data.count / maxCountVal) * 20) : 5)
           .attr("fill", d => d.depth === 0 ? 'rgb(251, 126, 0)' : 'rgb(145, 215, 210)');
-
+        
         g.selectAll("text")
           .data(rootLinear.descendants())
           .enter()
@@ -299,11 +410,26 @@
           .attr("text-anchor", "start")
           .attr("fill", "black")
           .text(d => `${d.data.name} (${d.data.count || 0})`);
-
+        
       } catch (error) {
         console.error("Errore nella creazione del dendrogramma:", error);
       }
     }
+    
+    document.addEventListener("DOMContentLoaded", () => {
+      const headerH1 = document.getElementById("header-h1");
+      if (headerH1) {
+        headerH1.style.cursor = "pointer"; 
+        headerH1.addEventListener("click", () => {
+          window.location.href = "index.html";
+        });
+      }
+    });
   </script>
+  
+  
+  
+  
+  
 </body>
 </html>
