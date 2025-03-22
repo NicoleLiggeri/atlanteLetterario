@@ -248,12 +248,14 @@ header div {
   list-style: none;
   padding: 0;
 }
-/* Custom Scrollbar Styling */
 
 /* For Firefox */
 #author-modal {
   scrollbar-width: thin; /* Makes the scrollbar thinner */
   scrollbar-color: #ccc #f7f7f7; /* Thumb and track colors */
+}
+#new-hierarchy-container li {
+  text-decoration: underline;
 }
 
 #author-modal ul li {

@@ -388,13 +388,30 @@
                 .querySelector("#container")
                 .appendChild(newHierarchyContainer);
 
+              // Funzione helper per estrarre ricorsivamente tutte le foglie del nodo
+              function getLeafNodes(node) {
+                let leaves = [];
+                if (!node.children || node.children.length === 0) {
+                  leaves.push(node);
+                } else {
+                  node.children.forEach((child) => {
+                    leaves = leaves.concat(getLeafNodes(child));
+                  });
+                }
+                return leaves;
+              }
+
               function displayChildren(node, previousNodes) {
                 newHierarchyContainer.innerHTML = "";
+
+                // Creazione del pulsante "Indietro"
                 const backButton = document.createElement("button");
                 backButton.innerHTML = "◀ Indietro";
                 backButton.className = "back-button";
                 backButton.style.marginBottom = "20px";
                 backButton.onclick = function () {
+                  // Rimuovo il listener sul resize prima di tornare indietro
+                  window.removeEventListener("resize", updateColumnCount);
                   if (previousNodes.length > 1) {
                     displayChildren(
                       previousNodes[previousNodes.length - 1],
@@ -410,63 +427,81 @@
                   }
                 };
                 newHierarchyContainer.appendChild(backButton);
-                const childrenList = document.createElement("ul");
-                node.children.forEach((child) => {
-                  const listItem = document.createElement("li");
-                  // Se il nodo ha figli e quindi mostriamo il toggle, rimuoviamo il bullet dell'li corrente
-                  if (child.children && child.children.length > 0) {
-                    listItem.style.listStyle = "none"; // Rimuove il pallino dall'li contenitore del toggle
 
-                    const toggleBtn = document.createElement("button");
-                    toggleBtn.textContent = "▶";
-                    toggleBtn.style.marginRight = "10px";
-                    toggleBtn.onclick = function () {
-                      const childUL = listItem.querySelector("ul");
-                      if (childUL) {
-                        childUL.style.display =
-                          childUL.style.display === "none" ? "block" : "none";
-                        toggleBtn.textContent =
-                          childUL.style.display === "none" ? "▶" : "▼";
-                      }
-                    };
-                    const childName = document.createElement("span");
-                    childName.textContent = child.data.name;
-                    listItem.appendChild(toggleBtn);
-                    listItem.appendChild(childName);
-                    const childUL = document.createElement("ul");
-                    childUL.style.display = "none";
-                    child.children.forEach((grandChild) => {
-                      const grandChildItem = document.createElement("li");
-                      grandChildItem.textContent = grandChild.data.name;
-                      grandChildItem.style.cursor = "pointer";
-                      grandChildItem.onclick = function () {
-                        createLinearDendrogram(
-                          grandChild.data.name,
-                          grandChild,
-                          child,
-                          newHierarchyContainer
-                        );
-                      };
-                      childUL.appendChild(grandChildItem);
-                    });
-                    listItem.appendChild(childUL);
-                  } else {
-                    const childName = document.createElement("span");
-                    childName.textContent = child.data.name;
-                    childName.style.cursor = "pointer";
-                    childName.onclick = function () {
+                // Estrae tutte le foglie (nodi senza figli) dalla gerarchia del nodo cliccato
+                const leaves = getLeafNodes(node);
+
+                // Creazione della lista principale senza altezza fissa
+                const childrenList = document.createElement("ul");
+                childrenList.style.columnGap = "20px";
+
+                // Raggruppa le foglie in base alla prima lettera del nome (in maiuscolo)
+                const leavesByLetter = {};
+                leaves.forEach((leaf) => {
+                  const firstLetter = leaf.data.name.charAt(0).toUpperCase();
+                  if (!leavesByLetter[firstLetter]) {
+                    leavesByLetter[firstLetter] = [];
+                  }
+                  leavesByLetter[firstLetter].push(leaf);
+                });
+
+                // Ordina le lettere in ordine alfabetico
+                const sortedLetters = Object.keys(leavesByLetter).sort();
+
+                sortedLetters.forEach((letter) => {
+                  // Aggiungi un'intestazione per la lettera
+                  const headerEl = document.createElement("h1");
+                  headerEl.textContent = letter;
+                  headerEl.classList.add("letter-header"); // Stilizzabile via CSS
+                  childrenList.appendChild(headerEl);
+
+                  // Ordina in ordine alfabetico le foglie relative a questa lettera
+                  leavesByLetter[letter].sort((a, b) =>
+                    a.data.name.localeCompare(b.data.name)
+                  );
+
+                  // Crea gli elementi della lista per ciascuna foglia
+                  leavesByLetter[letter].forEach((leaf) => {
+                    const listItem = document.createElement("li");
+                    const leafName = document.createElement("span");
+                    leafName.textContent = leaf.data.name;
+                    leafName.style.cursor = "pointer";
+                    leafName.onclick = function () {
                       createLinearDendrogram(
-                        child.data.name,
-                        child,
+                        leaf.data.name,
+                        leaf,
                         node,
                         newHierarchyContainer
                       );
                     };
-                    listItem.appendChild(childName);
-                  }
-                  childrenList.appendChild(listItem);
+                    listItem.appendChild(leafName);
+                    childrenList.appendChild(listItem);
+                  });
                 });
+
                 newHierarchyContainer.appendChild(childrenList);
+
+                // Funzione per calcolare il numero di colonne in base al contenuto e alla larghezza della finestra
+                function updateColumnCount() {
+                  // Calcola quante colonne servirebbero se ogni colonna non superasse l'altezza della finestra
+                  const columnsFromHeight = Math.ceil(
+                    childrenList.scrollHeight / window.innerHeight
+                  );
+                  // Calcola quante colonne sono supportate dallo schermo, ipotizzando una larghezza minima di 300px per colonna
+                  const columnsFromWidth =
+                    Math.floor(window.innerWidth / 300) || 1;
+                  // Il numero di colonne effettive sarà il minimo tra i due calcoli e 4 (massimo 4 colonne)
+                  const columnCount = Math.min(
+                    columnsFromHeight,
+                    columnsFromWidth,
+                    4
+                  );
+                  childrenList.style.columnCount = columnCount;
+                }
+
+                // Esegui il calcolo iniziale e imposta il listener sul resize
+                updateColumnCount();
+                window.addEventListener("resize", updateColumnCount);
               }
               displayChildren(d, [d]);
             }
