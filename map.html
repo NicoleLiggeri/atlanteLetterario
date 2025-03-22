@@ -97,7 +97,8 @@
 
     <script>
       let themeHeaderClicked = false;
-
+      let lastSearchMatches = [];
+      let globalSearchMatches = [];
       let world;
       let countriesData;
       let data = [];
@@ -154,47 +155,26 @@
             .polygonStrokeColor(() => "#111")
             .onPolygonClick(({ properties: d }) => {
               const clickedCountry = d.ADMIN;
-              const startYear = parseInt(
-                document.getElementById("slider-1").value
-              );
-              const endYear = parseInt(
-                document.getElementById("slider-2").value
-              );
-              const temaKeyword = cleanText(
-                document.getElementById("search-input").value.trim()
-              );
+              // Imposta (opzionalmente) un filtro globale per lo stato, se vuoi usarlo in altri contesti
+              // selectedState = clickedCountry;  (se necessario)
 
               const italianCountry =
                 countryMapping[clickedCountry] || clickedCountry;
-
               const header = document.querySelector("#data-panel h3");
               if (header) {
                 header.innerHTML = `Autori correlati ${italianCountry}:`;
               }
-
-              const countryMatches = data.filter(
-                (item) =>
-                  item["Citizenship Label"] === clickedCountry &&
-                  cleanText(item["Temi"]).includes(temaKeyword)
+              // Filtra i risultati della ricerca già memorizzati in base allo stato cliccato
+              const filteredMatches = lastSearchMatches.filter(
+                (item) => item["Citizenship Label"] === clickedCountry
+              );
+              const filteredAuthors = filteredMatches.map(
+                (item) => item["Autore"]
               );
 
-              const filteredAuthors = countryMatches.filter((item) => {
-                const birthYear = parseInt(item["Formatted Year of Birth"]);
-                const deathYear =
-                  item["Formatted Year of Death"] ===
-                  "Error: invalid syntax (<unknown>, line 0)"
-                    ? null
-                    : parseInt(item["Formatted Year of Death"]);
-                const isWithinYearRange =
-                  (birthYear >= startYear && birthYear <= endYear) ||
-                  (deathYear && deathYear >= startYear && deathYear <= endYear);
-                return isWithinYearRange;
-              });
-
-              const authors = filteredAuthors.map((item) => item["Autore"]);
               const dataList = document.getElementById("data-list");
               dataList.innerHTML = "";
-              authors.forEach((author) => {
+              filteredAuthors.forEach((author) => {
                 const listItem = document.createElement("li");
                 listItem.textContent = author;
                 dataList.appendChild(listItem);
@@ -216,46 +196,61 @@
 
       function triggerSearch() {
         const searchInput = document.getElementById("search-input");
-        // Salva il valore attuale e poi svuota la search bar
-        const keyword = searchInput.value.trim();
-        searchInput.value = "";
+        let keyword = searchInput.value.trim();
 
-        // Nasconde il modal (se presente) e resetta il dendrogramContainer
-        const modal = document.getElementById("author-details-modal");
-        if (modal) {
-          modal.style.display = "none";
-        }
-        const dendrogramContainer = document.getElementById(
-          "dendrogram-container"
-        );
-        if (dendrogramContainer) {
-          dendrogramContainer.remove();
-          document.getElementById("globe-container").style.display = "block";
-          document.getElementById("right-panel").style.display = "block";
+        // Se viene inserito un nuovo tema, esegui la ricerca sull'intero dataset
+        if (keyword !== "") {
+          // Esegui il filtraggio iniziale in base al tema e al range temporale
+          const startYear = parseInt(document.getElementById("slider-1").value);
+          const endYear = parseInt(document.getElementById("slider-2").value);
+          const cleanedKeyword = cleanText(keyword);
+
+          // Filtra l'intero dataset in base a tema e range temporale
+          globalSearchMatches = data.filter((item) => {
+            const birthYear = parseInt(item["Formatted Year of Birth"]);
+            const deathYear =
+              item["Formatted Year of Death"] ===
+              "Error: invalid syntax (<unknown>, line 0)"
+                ? null
+                : parseInt(item["Formatted Year of Death"]);
+            const isWithinYearRange =
+              (birthYear >= startYear && birthYear <= endYear) ||
+              (deathYear && deathYear >= startYear && deathYear <= endYear);
+            const isThemeMatch = cleanText(item["Temi"])
+              .split(",")
+              .map((t) => t.trim())
+              .some((t) => t === cleanedKeyword);
+            return isWithinYearRange && isThemeMatch;
+          });
+
+          // Se si tratta di una nuova ricerca, svuota il campo (facoltativo)
+          searchInput.value = "";
         }
 
+        // Se il campo è vuoto, significa che stiamo modificando il range temporale
+        // e usiamo come base i risultati della ricerca iniziale
         const startYear = parseInt(document.getElementById("slider-1").value);
         const endYear = parseInt(document.getElementById("slider-2").value);
-        const cleanedKeyword = cleanText(keyword);
-        const wrapper = document.querySelector(".wrapper");
 
-        const matches = data.filter((item) => {
+        // Applica il filtro temporale sul set originale di globalSearchMatches
+        const filteredMatches = globalSearchMatches.filter((item) => {
           const birthYear = parseInt(item["Formatted Year of Birth"]);
           const deathYear =
             item["Formatted Year of Death"] ===
             "Error: invalid syntax (<unknown>, line 0)"
               ? null
               : parseInt(item["Formatted Year of Death"]);
-          const isKeywordMatch = cleanText(item["Temi"])
-            .split(",")
-            .map((t) => t.trim())
-            .some((t) => t === cleanedKeyword);
-          const isWithinYearRange =
+          return (
             (birthYear >= startYear && birthYear <= endYear) ||
-            (deathYear && deathYear >= startYear && deathYear <= endYear);
-          return isKeywordMatch && isWithinYearRange;
+            (deathYear && deathYear >= startYear && deathYear <= endYear)
+          );
         });
 
+        // Aggiorna la variabile che userai per filtrare anche la mappa
+        lastSearchMatches = filteredMatches;
+
+        // Aggiorna la UI come già fai
+        const wrapper = document.querySelector(".wrapper");
         if (
           wrapper &&
           (wrapper.style.display === "none" || wrapper.style.display === "")
@@ -265,15 +260,13 @@
 
         const app = document.getElementById("app");
         const rightPanel = document.getElementById("right-panel");
-
         if (app.classList.contains("one-column")) {
           app.classList.remove("one-column");
           app.classList.add("two-columns");
         }
-
         rightPanel.style.display = "block";
 
-        const selectedTheme = keyword;
+        const selectedTheme = keyword; // Potrebbe essere vuoto se non è stata digitata una nuova keyword
 
         let themeHeader = document.getElementById("theme-header");
         if (!themeHeader) {
@@ -289,6 +282,7 @@
           .replace(/ /g, "-");
 
         if (
+          normalized &&
           associationsData[normalized] &&
           associationsData[normalized].Associati &&
           associationsData[normalized].Associati.length > 0
@@ -298,14 +292,17 @@
             .getElementById("theme-link")
             .addEventListener("click", (e) => {
               e.preventDefault();
-              themeHeaderClicked = true; // Imposta il flag quando si clicca il link
+              themeHeaderClicked = true;
               showDendrogramForTheme(selectedTheme);
             });
         } else {
-          themeHeader.textContent = selectedTheme;
+          // Se il tema è vuoto (ovvero, stiamo solo filtrando per tempo) oppure non c'è associazione,
+          // mostra un'intestazione di default
+          themeHeader.textContent = selectedTheme || "Risultati della ricerca";
         }
 
-        const countryOccurrences = matches.reduce((acc, item) => {
+        // Aggiorna il colore dei poligoni sulla mappa in base alle occorrenze per stato
+        const countryOccurrences = filteredMatches.reduce((acc, item) => {
           const country = item["Citizenship Label"];
           acc[country] = (acc[country] || 0) + 1;
           return acc;
@@ -320,7 +317,8 @@
           });
         }
 
-        const authors = matches.map((item) => item["Autore"]);
+        // Aggiorna la lista degli autori
+        const authors = filteredMatches.map((item) => item["Autore"]);
         const dataList = document.getElementById("data-list");
         dataList.innerHTML = "";
         if (authors.length > 0) {
@@ -333,8 +331,6 @@
         } else {
           document.getElementById("data-panel").style.display = "none";
         }
-
-        // NOTA: non è più necessario svuotare qui la search bar
       }
 
       const startYearInput = document.getElementById("slider-1");
