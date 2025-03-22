@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Interactive Globe Visualization</title>
+    <title>L'atlante dei temi</title>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/noUiSlider/15.6.0/nouislider.min.js"></script>
     <link
       rel="stylesheet"
@@ -102,23 +102,6 @@
       let countriesData;
       let data = [];
       let associationsData = {};
-
-      fetch(
-        "https://raw.githubusercontent.com/NicoleLiggeri/atlanteLetterario/refs/heads/main/datasets/data.json"
-      )
-        .then((res) => res.json())
-        .then((json) => {
-          data = json;
-
-          const params = new URLSearchParams(window.location.search);
-          const themeParam = params.get("theme");
-          if (themeParam) {
-            const searchInput = document.getElementById("search-input");
-            searchInput.value = themeParam;
-            triggerSearch();
-          }
-        })
-        .catch((err) => console.error("Errore nel caricamento dei dati:", err));
 
       fetch(
         "https://raw.githubusercontent.com/NicoleLiggeri/atlanteLetterario/refs/heads/main/datasets/hierarchy_themes.json"
@@ -237,12 +220,6 @@
         const keyword = searchInput.value.trim();
         searchInput.value = "";
 
-        // Se non è stato inserito nessun tema, interrompe la funzione
-        if (!keyword) {
-          alert("Inserisci un tema!");
-          return;
-        }
-
         // Nasconde il modal (se presente) e resetta il dendrogramContainer
         const modal = document.getElementById("author-details-modal");
         if (modal) {
@@ -278,13 +255,6 @@
             (deathYear && deathYear >= startYear && deathYear <= endYear);
           return isKeywordMatch && isWithinYearRange;
         });
-
-        if (matches.length === 0) {
-          alert(
-            "Nessun risultato trovato per il tema e i criteri selezionati."
-          );
-          return;
-        }
 
         if (
           wrapper &&
@@ -362,7 +332,6 @@
           });
         } else {
           document.getElementById("data-panel").style.display = "none";
-          alert("No authors found for the selected country and criteria.");
         }
 
         // NOTA: non è più necessario svuotare qui la search bar
@@ -885,7 +854,7 @@
             (d) => d.data.count || 1
           );
           g.selectAll("circle")
-            .data(rootNode.descendants())
+            .data(rootLinear.descendants())
             .enter()
             .append("circle")
             .attr("cx", (d) => d.y)
@@ -893,9 +862,12 @@
             .attr("r", (d) =>
               d.data.count ? 5 + (d.data.count / maxCountVal) * 20 : 5
             )
-            .attr("fill", (d) =>
-              d.depth === 0 ? "rgb(251, 126, 0)" : "rgb(145, 215, 210)"
-            );
+            .attr("fill", (d) => {
+              if (d.data.count === 0) {
+                return "grey"; // Se il conteggio è zero, il nodo è grigio
+              }
+              return d.depth === 0 ? "rgb(251, 126, 0)" : "rgb(145, 215, 210)";
+            });
 
           g.selectAll("text")
             .data(rootNode.descendants())
@@ -915,29 +887,6 @@
         }
       }
 
-      window.addEventListener("DOMContentLoaded", () => {
-        const params = new URLSearchParams(window.location.search);
-        const theme = params.get("theme");
-        if (theme) {
-          const searchInput = document.getElementById("search-input");
-          searchInput.value = theme;
-          const interval = setInterval(() => {
-            if (
-              window.data &&
-              Array.isArray(window.data) &&
-              window.data.length > 0
-            ) {
-              clearInterval(interval);
-              if (typeof triggerSearch === "function") {
-                triggerSearch();
-              } else {
-                document.getElementById("search-button").click();
-              }
-            }
-          }, 100);
-        }
-      });
-
       document.addEventListener("DOMContentLoaded", () => {
         const headerH1 = document.getElementById("header-h1");
         if (headerH1) {
@@ -947,20 +896,35 @@
           });
         }
       });
+
       document.addEventListener("DOMContentLoaded", () => {
         const params = new URLSearchParams(window.location.search);
-        const themeParam = params.get("theme");
-        if (themeParam) {
+        const theme = params.get("theme");
+        const triggerSearchParam = params.get("triggerSearch");
+        console.log("Parametri URL:", { theme, triggerSearchParam });
+        if (theme && triggerSearchParam === "1") {
+          // Imposta il valore dell'input
           const searchInput = document.getElementById("search-input");
           if (searchInput) {
-            searchInput.value = themeParam;
+            searchInput.value = theme;
+            console.log("Search input impostato a:", theme);
+          } else {
+            console.error("Elemento 'search-input' non trovato.");
           }
-          setTimeout(() => {
-            if (
-              params.get("triggerSearch") === "1" &&
-              typeof triggerSearch === "function"
-            ) {
-              triggerSearch();
+          // Attendi che i dati siano caricati prima di triggerare la ricerca
+          const interval = setInterval(() => {
+            if (data && Array.isArray(data) && data.length > 0) {
+              clearInterval(interval);
+              console.log("Dati caricati. Triggero la ricerca...");
+              // In questo esempio triggerSearch() è la funzione che esegue la ricerca
+              if (typeof triggerSearch === "function") {
+                triggerSearch();
+              } else {
+                const searchButton = document.getElementById("search-button");
+                if (searchButton) {
+                  searchButton.click();
+                }
+              }
             }
           }, 100);
         }

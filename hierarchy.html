@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Radial Visualization</title>
+    <title>L'atlante dei temi</title>
     <script src="https://d3js.org/d3.v7.min.js"></script>
     <link rel="stylesheet" href="style.css" />
 
@@ -222,12 +222,7 @@
         });
         themes = Array.from(themesSet);
       }
-      // --- Fine Autocompletamento ---
 
-      // Il resto del codice di theme.html (stato, pulsante Indietro, runSearch, createLinearDendrogram, ecc.) rimane invariato.
-
-      // -----------------------------
-      // Codice D3 per il grafo radiale
       d3.json(
         "https://raw.githubusercontent.com/NicoleLiggeri/atlanteLetterario/refs/heads/main/datasets/gerarchia_sogg.json"
       )
@@ -906,9 +901,14 @@
               .attr("r", (d) =>
                 d.data.count ? 5 + (d.data.count / maxCountVal) * 20 : 5
               )
-              .attr("fill", (d) =>
-                d.depth === 0 ? "rgb(251, 126, 0)" : "rgb(145, 215, 210)"
-              );
+              .attr("fill", (d) => {
+                if (d.data.count === 0) {
+                  return "grey"; // Se il conteggio è zero, il nodo è grigio
+                }
+                return d.depth === 0
+                  ? "rgb(251, 126, 0)"
+                  : "rgb(145, 215, 210)";
+              });
 
             g.selectAll("text")
               .data(rootLinear.descendants())
