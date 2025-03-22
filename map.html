@@ -103,6 +103,7 @@
       let countriesData;
       let data = [];
       let associationsData = {};
+      let lastSearchTheme = "";
 
       fetch(
         "https://raw.githubusercontent.com/NicoleLiggeri/atlanteLetterario/refs/heads/main/datasets/hierarchy_themes.json"
@@ -198,14 +199,12 @@
         const searchInput = document.getElementById("search-input");
         let keyword = searchInput.value.trim();
 
-        // Se viene inserito un nuovo tema, esegui la ricerca sull'intero dataset
+        // Se viene inserito un nuovo tema, esegui il filtraggio iniziale sull'intero dataset
         if (keyword !== "") {
-          // Esegui il filtraggio iniziale in base al tema e al range temporale
           const startYear = parseInt(document.getElementById("slider-1").value);
           const endYear = parseInt(document.getElementById("slider-2").value);
           const cleanedKeyword = cleanText(keyword);
 
-          // Filtra l'intero dataset in base a tema e range temporale
           globalSearchMatches = data.filter((item) => {
             const birthYear = parseInt(item["Formatted Year of Birth"]);
             const deathYear =
@@ -223,16 +222,14 @@
             return isWithinYearRange && isThemeMatch;
           });
 
-          // Se si tratta di una nuova ricerca, svuota il campo (facoltativo)
+          // Svuota il campo (facoltativo) e aggiorna il tema salvato
           searchInput.value = "";
+          lastSearchTheme = keyword;
         }
 
-        // Se il campo è vuoto, significa che stiamo modificando il range temporale
-        // e usiamo come base i risultati della ricerca iniziale
+        // Applica il filtro temporale sul set originale di globalSearchMatches
         const startYear = parseInt(document.getElementById("slider-1").value);
         const endYear = parseInt(document.getElementById("slider-2").value);
-
-        // Applica il filtro temporale sul set originale di globalSearchMatches
         const filteredMatches = globalSearchMatches.filter((item) => {
           const birthYear = parseInt(item["Formatted Year of Birth"]);
           const deathYear =
@@ -245,11 +242,9 @@
             (deathYear && deathYear >= startYear && deathYear <= endYear)
           );
         });
-
-        // Aggiorna la variabile che userai per filtrare anche la mappa
         lastSearchMatches = filteredMatches;
 
-        // Aggiorna la UI come già fai
+        // Mostra il wrapper se nascosto
         const wrapper = document.querySelector(".wrapper");
         if (
           wrapper &&
@@ -266,7 +261,8 @@
         }
         rightPanel.style.display = "block";
 
-        const selectedTheme = keyword; // Potrebbe essere vuoto se non è stata digitata una nuova keyword
+        // Se non viene digitato un nuovo tema, usa lastSearchTheme (quello salvato)
+        const selectedTheme = keyword !== "" ? keyword : lastSearchTheme;
 
         let themeHeader = document.getElementById("theme-header");
         if (!themeHeader) {
@@ -275,19 +271,21 @@
           rightPanel.insertBefore(themeHeader, rightPanel.firstChild);
         }
 
+        // Normalizza il tema
         const normalized = selectedTheme
           .toLowerCase()
           .normalize("NFD")
           .replace(/[\u0300-\u036f]/g, "")
           .replace(/ /g, "-");
 
+        // Se il tema ha associazioni, mostra il link; altrimenti, mostra il testo
         if (
           normalized &&
           associationsData[normalized] &&
           associationsData[normalized].Associati &&
           associationsData[normalized].Associati.length > 0
         ) {
-          themeHeader.innerHTML = `<a href="#" id="theme-link" class="theme-link">${selectedTheme}</a>`;
+          themeHeader.innerHTML = `<a href="#" id="theme-link" class="theme-link">${lastSearchTheme}</a>`;
           document
             .getElementById("theme-link")
             .addEventListener("click", (e) => {
@@ -296,9 +294,8 @@
               showDendrogramForTheme(selectedTheme);
             });
         } else {
-          // Se il tema è vuoto (ovvero, stiamo solo filtrando per tempo) oppure non c'è associazione,
-          // mostra un'intestazione di default
-          themeHeader.textContent = selectedTheme || "Risultati della ricerca";
+          themeHeader.textContent =
+            lastSearchTheme || "Risultati della ricerca";
         }
 
         // Aggiorna il colore dei poligoni sulla mappa in base alle occorrenze per stato
@@ -850,7 +847,7 @@
             (d) => d.data.count || 1
           );
           g.selectAll("circle")
-            .data(rootLinear.descendants())
+            .data(rootNode.descendants())
             .enter()
             .append("circle")
             .attr("cx", (d) => d.y)
@@ -860,7 +857,7 @@
             )
             .attr("fill", (d) => {
               if (d.data.count === 0) {
-                return "grey"; // Se il conteggio è zero, il nodo è grigio
+                return "grey";
               }
               return d.depth === 0 ? "rgb(251, 126, 0)" : "rgb(145, 215, 210)";
             });
